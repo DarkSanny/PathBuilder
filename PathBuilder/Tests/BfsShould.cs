@@ -63,6 +63,5 @@ namespace PathBuilder.Tests
 			A.CallTo(() => _field.IsCouldVisited(start)).Returns(true);
 			_bfs.FindPath(_field, start, end).Should().BeEquivalentTo(start, here, end);
 		}
-
 	}
 }
