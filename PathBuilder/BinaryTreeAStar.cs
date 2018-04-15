@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Structures;
 
 namespace PathBuilder
 {
-
-	public class AStar : IPathBuilder 
+	public class BinaryTreeAStar : IPathBuilder
 	{
+
 		public IEnumerable<Point> FindPath(IMap map, Point from, Point to)
 		{
-			var points = new List<AStarPoint>();
+			var points = new RandomBinaryTree<AStarPoint>();
 			var path = new Dictionary<AStarPoint, AStarPoint>();
 			var start = new AStarPoint(from, to, null);
 			var finish = new AStarPoint(to, to, null);
@@ -17,7 +17,7 @@ namespace PathBuilder
 			path[start] = null;
 			while (points.Count != 0)
 			{
-				var point = FindMinOrThrow(points);
+				var point = points.MinOrThrow();
 				if (point.Point.Equals(to)) break;
 				var nextPoints = map.GetAreaOfPoint(point.Point)
 					.Where(map.IsCouldVisited)
@@ -35,7 +35,7 @@ namespace PathBuilder
 		}
 
 		private static IEnumerable<Point> BuildPath(
-			IReadOnlyDictionary<AStarPoint, AStarPoint> path,  
+			IReadOnlyDictionary<AStarPoint, AStarPoint> path,
 			AStarPoint finish)
 		{
 			if (!path.ContainsKey(finish)) yield break;
@@ -47,13 +47,5 @@ namespace PathBuilder
 				yield return result.Pop();
 		}
 
-		private static AStarPoint FindMinOrThrow(IEnumerable<AStarPoint> list)
-		{
-			var min = list
-				.Aggregate<AStarPoint, AStarPoint>(null, 
-					(current, aStarPoint) => current == null ? aStarPoint : current.CostOfWay > aStarPoint.CostOfWay ? aStarPoint : current);
-			if (min == null) throw new ArgumentException("List is empty");
-			return min;
-		}
 	}
 }

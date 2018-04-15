@@ -9,10 +9,11 @@ namespace Drawer
 
 		public static AStar Astar = new AStar();
 		public static Bfs Bfs = new Bfs();
+		public static BinaryTreeAStar Btastar = new BinaryTreeAStar();
 
 		public static void Main(string[] args)
 		{
-			//MazeTest();
+			MazeTest();
 			LongerTest();
 		}
 
@@ -37,20 +38,11 @@ namespace Drawer
 			var field = new SimpleField(maze);
 			var start = new Point(1, 1);
 			var end = new Point(10, 4);
-			field.FindPath(Bfs, start, end);
+			field.FindPath(Btastar, start, end);
 			field.DrawField();
-			var watch = new Stopwatch();
-			watch.Start();
-			for (var i = 0; i < 100000; i++)
-				field.FindPath(Bfs, start, end);
-			watch.Stop();
-			Console.WriteLine(watch.ElapsedMilliseconds);
-			field.FindPath(Astar, start, end);
-			watch.Restart();
-			for (var i = 0; i < 100000; i++)
-				field.FindPath(Astar, start, end);
-			watch.Stop();
-			Console.WriteLine(watch.ElapsedMilliseconds);
+			Console.WriteLine("BFS: " + RunTest(field, Bfs, start, end, 10000));
+			Console.WriteLine("AStar: " + RunTest(field, Astar, start, end, 10000));
+			Console.WriteLine("RBTAStar: " + RunTest(field, Btastar, start, end, 10000));
 		}
 
 		public static void LongerTest()
@@ -85,20 +77,22 @@ namespace Drawer
 			var field = new SimpleField(maze);
 			var start = new Point(2, 5);
 			var end = new Point(127, 5);
-			field.FindPath(Bfs, start, end);
+			field.FindPath(Btastar, start, end);
 			field.DrawField();
+			Console.WriteLine("BFS: " + RunTest(field, Bfs, start, end, 10000));
+			Console.WriteLine("AStar: " + RunTest(field, Astar, start, end, 10000));
+			Console.WriteLine("RBTAStar: " + RunTest(field, Btastar, start, end, 10000));
+		}
+
+		public static long RunTest(SimpleField field, IPathBuilder builder, Point start, Point finish, int runCount)
+		{
 			var watch = new Stopwatch();
+			field.FindPath(Bfs, start, finish);
 			watch.Start();
-			for (var i = 0; i < 10000; i++)
-				field.FindPath(Bfs, start, end);
+			for (var i = 0; i < runCount; i++)
+				field.FindPath(builder, start, finish);
 			watch.Stop();
-			Console.WriteLine(watch.ElapsedMilliseconds);
-			field.FindPath(Astar, start, end);
-			watch.Restart();
-			for (var i = 0; i < 10000; i++)
-				field.FindPath(Astar, start, end);
-			watch.Stop();
-			Console.WriteLine(watch.ElapsedMilliseconds);
+			return watch.ElapsedMilliseconds;
 		}
 	}
 }
