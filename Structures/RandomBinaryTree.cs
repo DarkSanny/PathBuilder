@@ -2,32 +2,33 @@
 
 namespace Structures
 {
-	public class RandomBinaryTree<T> where T : IComparable<T>
+	internal class RbstNode<TNode> where TNode : IComparable<TNode>
 	{
-		private class Node<TNode> where TNode : IComparable<TNode>
+		public TNode Value { get; }
+		public int Size { get; set; }
+		public RbstNode<TNode> Left { get; set; }
+		public RbstNode<TNode> Right { get; set; }
+
+		public RbstNode(TNode item)
 		{
-			public TNode Value { get; }
-			public int Size { get; set; }
-			public Node<TNode> Left { get; set; }
-			public Node<TNode> Right { get; set; }
-
-			public Node(TNode item)
-			{
-				Value = item;
-				Size = 1;
-			}
+			Value = item;
+			Size = 1;
 		}
+	}
 
-		private static Random Random = new Random();
-		private Node<T> _head;
+	public class RandomBinaryTree<T> where T : IComparable<T>
+	{	
+
+		private static Random _random = new Random();
+		private RbstNode<T> _head;
 
 		public int Count => GetSize(_head);
 
-		private static int GetSize(Node<T> node) => node?.Size ?? 0;
+		private static int GetSize(RbstNode<T> rbstNode) => rbstNode?.Size ?? 0;
 
-		private static void FixSize(Node<T> node)
+		private static void FixSize(RbstNode<T> rbstNode)
 		{
-			node.Size = GetSize(node.Left) + GetSize(node.Right) + 1;
+			rbstNode.Size = GetSize(rbstNode.Left) + GetSize(rbstNode.Right) + 1;
 		}
 
 		public void Add(T item)
@@ -49,70 +50,70 @@ namespace Structures
 			return currentNode.Value;
 		}
 
-		private static Node<T> RotateRight(Node<T> node)
+		private static RbstNode<T> RotateRight(RbstNode<T> rbstNode)
 		{
-			var tmp = node.Left;
-			if (tmp == null || tmp.Value.CompareTo(node.Value) == 0) return node;
-			node.Left = tmp.Right;
-			tmp.Right = node;
-			tmp.Size = node.Size;
-			FixSize(node);
+			var tmp = rbstNode.Left;
+			if (tmp == null || tmp.Value.CompareTo(rbstNode.Value) == 0) return rbstNode;
+			rbstNode.Left = tmp.Right;
+			tmp.Right = rbstNode;
+			tmp.Size = rbstNode.Size;
+			FixSize(rbstNode);
 			FixSize(tmp);
 			return tmp;
 		}
 
-		private static Node<T> RotateLeft(Node<T> node)
+		private static RbstNode<T> RotateLeft(RbstNode<T> rbstNode)
 		{
-			var tmp = node.Right;
-			if (tmp == null || tmp.Value.CompareTo(node.Value) == 0) return node;
-			node.Right = tmp.Left;
-			tmp.Left = node;
-			FixSize(node);
+			var tmp = rbstNode.Right;
+			if (tmp == null || tmp.Value.CompareTo(rbstNode.Value) == 0) return rbstNode;
+			rbstNode.Right = tmp.Left;
+			tmp.Left = rbstNode;
+			FixSize(rbstNode);
 			FixSize(tmp);
 			return tmp;
 		}
 
-		private static Node<T> InsertRoot(Node<T> node, T item) 
+		private static RbstNode<T> InsertRoot(RbstNode<T> rbstNode, T item) 
 		{
-			if (node == null) return new Node<T>(item);
-			if (node.Value.CompareTo(item) > 0)
+			if (rbstNode == null) return new RbstNode<T>(item);
+			if (rbstNode.Value.CompareTo(item) > 0)
 			{
-				node.Left = InsertRoot(node.Left, item);
-				return RotateRight(node);
+				rbstNode.Left = InsertRoot(rbstNode.Left, item);
+				return RotateRight(rbstNode);
 			}
-				node.Right = InsertRoot(node.Right, item);
-				return RotateLeft(node);
+				rbstNode.Right = InsertRoot(rbstNode.Right, item);
+				return RotateLeft(rbstNode);
 		}
 
-		private static Node<T> RandomInsert(Node<T> node, T item) 
+		private static RbstNode<T> RandomInsert(RbstNode<T> rbstNode, T item) 
 		{
-			if (node == null) return new Node<T>(item);
-			if (Random.Next(node.Size + 1) == 0)
-				return InsertRoot(node, item);
-			if (node.Value.CompareTo(item) > 0)
-				node.Left = RandomInsert(node.Left, item);
+			if (rbstNode == null) return new RbstNode<T>(item);
+			if (_random.Next(rbstNode.Size + 1) == 0)
+				return InsertRoot(rbstNode, item);
+			if (rbstNode.Value.CompareTo(item) > 0)
+				rbstNode.Left = RandomInsert(rbstNode.Left, item);
 			else
-				node.Right = RandomInsert(node.Right, item);
-			FixSize(node);
-			return node;
+				rbstNode.Right = RandomInsert(rbstNode.Right, item);
+			FixSize(rbstNode);
+			return rbstNode;
 		}
 
-		private static Node<T> Insert(Node<T> node, T item)
+		private static RbstNode<T> Insert(RbstNode<T> rbstNode, T item)
 		{
-			if (node == null) return new Node<T>(item);
-			if (node.Value.CompareTo(item) > 0)
-				node.Left = Insert(node.Left, item);
+			if (rbstNode == null) return new RbstNode<T>(item);
+			if (rbstNode.Value.CompareTo(item) > 0)
+				rbstNode.Left = Insert(rbstNode.Left, item);
 			else
-				node.Right = Insert(node.Right, item);
-			FixSize(node);
-			return node;
+				rbstNode.Right = Insert(rbstNode.Right, item);
+			FixSize(rbstNode);
+			return rbstNode;
 		}
 
-		private static Node<T> Join(Node<T> first, Node<T> second) 
+		private static RbstNode<T> Join(RbstNode<T> first, RbstNode<T> second) 
 		{
 			if (first == null) return second;
 			if (second == null) return first;
-			if (Random.Next(first.Size + second.Size) < first.Size)
+			if (_random.Next(first.Size + second.Size) < first.Size)
 			{
 				first.Right = Join(first.Right, second);
 				FixSize(first);
@@ -123,19 +124,19 @@ namespace Structures
 				return second;
 		}
 
-		private static Node<T> Remove(Node<T> node, T item)
+		private static RbstNode<T> Remove(RbstNode<T> rbstNode, T item)
 		{
-			if (node == null) return null;
-			if (node.Value.Equals(item))
+			if (rbstNode == null) return null;
+			if (rbstNode.Value.Equals(item))
 			{
-				return Join(node.Left, node.Right);
+				return Join(rbstNode.Left, rbstNode.Right);
 			}
-			if (node.Value.CompareTo(item) > 0)
-				node.Left = Remove(node.Left, item);
+			if (rbstNode.Value.CompareTo(item) > 0)
+				rbstNode.Left = Remove(rbstNode.Left, item);
 			else
-				node.Right = Remove(node.Right, item);
-			FixSize(node);
-			return node;
+				rbstNode.Right = Remove(rbstNode.Right, item);
+			FixSize(rbstNode);
+			return rbstNode;
 		}
 
 	}
