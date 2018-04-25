@@ -127,7 +127,7 @@ namespace Structures
 			else lastNode.Parent.Right = newNode;
 		}
 
-		private RbtNode<T> GetMinNodeOrThrow(RbtNode<T> node)
+		private static RbtNode<T> GetMinNodeOrThrow(RbtNode<T> node)
 		{
 			if (node == RbtNode<T>.Nil) throw new Exception("Tree is empty");
 			var current = node;
@@ -136,7 +136,7 @@ namespace Structures
 			return current;
 		}
 
-		private RbtNode<T> GetMaxNodeOrThrow(RbtNode<T> node)
+		private static RbtNode<T> GetMaxNodeOrThrow(RbtNode<T> node)
 		{
 			if (node == RbtNode<T>.Nil) throw new Exception("Tree is empty");
 			var current = node;
@@ -145,7 +145,7 @@ namespace Structures
 			return current;
 		}
 
-		private RbtNode<T> TreeSuccesor(RbtNode<T> node)
+		private static RbtNode<T> TreeSuccesor(RbtNode<T> node)
 		{
 			if (node.Right != RbtNode<T>.Nil) return GetMinNodeOrThrow(node);
 			var tmp = node.Parent;

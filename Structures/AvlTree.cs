@@ -1,0 +1,143 @@
+﻿using System;
+
+namespace Structures
+{
+	internal class AvlNode<T>
+	{
+		public T Value { get; set; }
+		public int Height { get; set; }
+		public AvlNode<T> Left { get; set; }
+		public AvlNode<T> Right { get; set; }
+
+		public AvlNode(T value)
+		{
+			Value = value;
+			Height = 1;
+		}
+	}
+
+	public class AvlTree<T> where T : IComparable<T>
+	{
+		internal AvlNode<T> Head;
+		public int Count { get; private set; }
+
+		public void Insert(T value)
+		{
+			Head = Insert(Head, value);
+			Count++;
+		}
+
+		public void Remove(T item)
+		{
+			var count = Count;
+			Head = Remove(Head, item, ref count);
+			Count = count;
+		}
+
+		public T MinOrThrow()
+		{
+			var min = FindMin(Head);
+			if (min == null) throw new Exception("Tree is empty");
+			return min.Value;
+		}
+
+		internal static int GetHeight(AvlNode<T> node)
+		{
+			return node?.Height ?? 0;
+		}
+
+		internal static int GetBalanceFactor(AvlNode<T> node)
+		{
+			return GetHeight(node?.Right) - GetHeight(node?.Left);
+		}
+
+		internal static void FixHeight(AvlNode<T> node)
+		{
+			var leftHeight = GetHeight(node.Left);
+			var rightHeight = GetHeight(node.Right);
+			node.Height = (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
+		}
+
+		internal static AvlNode<T> RotateToRight(AvlNode<T> node)
+		{
+			var tmp = node.Left;
+			if (tmp == null || tmp.Value.CompareTo(node.Value) == 0) return node;
+			node.Left = tmp.Right;
+			tmp.Right = node;
+			FixHeight(node);
+			FixHeight(tmp);
+			return tmp;
+		}
+
+		internal static AvlNode<T> RotateToLeft(AvlNode<T> node)
+		{
+			var tmp = node.Right;
+			if (tmp == null || tmp.Value.CompareTo(node.Value) == 0) return node;
+			node.Right = tmp.Left;
+			tmp.Left = node;
+			FixHeight(node);
+			FixHeight(tmp);
+			return tmp;
+		}
+
+		internal static AvlNode<T> Balance(AvlNode<T> node)
+		{
+			FixHeight(node);
+			var balanceFactor = GetBalanceFactor(node);
+			switch (balanceFactor)
+			{
+				case 2:
+					if (GetBalanceFactor(node.Right) < 0) node.Right = RotateToRight(node.Right);
+					return RotateToLeft(node);
+				case -2:
+					if (GetBalanceFactor(node.Left) > 0) node.Left = RotateToLeft(node.Left);
+					return RotateToRight(node);
+			}
+			return node;
+		}
+
+		internal static AvlNode<T> Insert(AvlNode<T> node, T value)
+		{
+			if (node == null) return new AvlNode<T>(value);
+			if (node.Value.CompareTo(value) > 0) node.Left = Insert(node.Left, value);
+			else node.Right = Insert(node.Right, value);
+			return Balance(node);
+		}
+
+		internal static AvlNode<T> FindMin(AvlNode<T> node)
+		{
+			if (node == null) return null;
+			while (true)
+			{
+				if (node?.Left == null) return node;
+				node = node.Left;
+			}
+		}
+
+		internal static AvlNode<T> RemoveMin(AvlNode<T> node)
+		{
+			if (node.Left == null) return node.Right;
+			node.Left = RemoveMin(node.Left);
+			return Balance(node);
+		}
+
+		internal static AvlNode<T> Remove(AvlNode<T> node, T item, ref int count)
+		{
+			if (node == null) return null;
+			if (node.Value.CompareTo(item) > 0) node.Left = Remove(node.Left, item, ref count);
+			else if (!node.Value.Equals(item) || node.Value.CompareTo(item) < 0) node.Right = Remove(node.Right, item, ref count);
+			else 
+			{
+				count--;
+				var left = node.Left;
+				var right = node.Right;
+				if (right == null) return left;
+				var min = FindMin(right);
+				min.Right = RemoveMin(right);
+				min.Left = left;
+				return Balance(min);
+			}
+			return Balance(node);
+		}
+	}
+}

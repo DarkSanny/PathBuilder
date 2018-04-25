@@ -9,11 +9,11 @@ namespace PathBuilder
 
 		public IEnumerable<Point> FindPath(IMap map, Point from, Point to)
 		{
-			var points = new RandomBinaryTree<AStarPoint>();
+			var points = new AvlTree<AStarPoint>();
 			var path = new Dictionary<AStarPoint, AStarPoint>();
 			var start = new AStarPoint(from, to, null);
 			var finish = new AStarPoint(to, to, null);
-			points.Add(start);
+			points.Insert(start);
 			path[start] = null;
 			while (points.Count != 0)
 			{
@@ -25,7 +25,7 @@ namespace PathBuilder
 					.Where(p => !path.ContainsKey(p));
 				foreach (var aStarPoint in nextPoints)
 				{
-					points.Add(aStarPoint);
+					points.Insert(aStarPoint);
 					path[aStarPoint] = point;
 				}
 				points.Remove(point);

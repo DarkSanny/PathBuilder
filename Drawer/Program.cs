@@ -17,6 +17,7 @@ namespace Drawer
 			LongerTest();
 		}
 
+
 		public static void MazeTest()
 		{
 			var maze = new[]

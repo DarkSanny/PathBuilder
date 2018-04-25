@@ -31,7 +31,7 @@ namespace Structures
 			rbstNode.Size = GetSize(rbstNode.Left) + GetSize(rbstNode.Right) + 1;
 		}
 
-		public void Add(T item)
+		public void Insert(T item)
 		{
 			_head = RandomInsert(_head, item);
 		}
@@ -94,17 +94,6 @@ namespace Structures
 				rbstNode.Left = RandomInsert(rbstNode.Left, item);
 			else
 				rbstNode.Right = RandomInsert(rbstNode.Right, item);
-			FixSize(rbstNode);
-			return rbstNode;
-		}
-
-		private static RbstNode<T> Insert(RbstNode<T> rbstNode, T item)
-		{
-			if (rbstNode == null) return new RbstNode<T>(item);
-			if (rbstNode.Value.CompareTo(item) > 0)
-				rbstNode.Left = Insert(rbstNode.Left, item);
-			else
-				rbstNode.Right = Insert(rbstNode.Right, item);
 			FixSize(rbstNode);
 			return rbstNode;
 		}

@@ -6,7 +6,6 @@ namespace Structures.Tests
 	[TestFixture]
 	public class RandomBinaryTreeShould
 	{
-		
 		private RandomBinaryTree<int> _rbt;
 
 		[SetUp]
@@ -18,7 +17,7 @@ namespace Structures.Tests
 		[Test]
 		public void AddFirstItem()
 		{
-			_rbt.Add(5);
+			_rbt.Insert(5);
 			_rbt.Count.Should().Be(1);
 		}
 
@@ -26,8 +25,8 @@ namespace Structures.Tests
 		public void AddSomeItems()
 		{
 			for (var i = 0; i < 100; i++)
-				_rbt.Add(5 + i);
-			_rbt.Add(20);
+				_rbt.Insert(5 + i);
+			_rbt.Insert(20);
 			_rbt.Count.Should().Be(101);
 		}
 		   
@@ -35,7 +34,7 @@ namespace Structures.Tests
 		public void RemoveItem()
 		{
 			for (var i = 0; i < 100; i++)
-				_rbt.Add(5 + i);
+				_rbt.Insert(5 + i);
 			_rbt.Remove(5);
 			_rbt.Count.Should().Be(99);
 		}
@@ -44,7 +43,7 @@ namespace Structures.Tests
 		public void HaveSameSize_WhenRemoteNonContainedItem()
 		{
 			for (var i = 0; i < 100; i++)
-				_rbt.Add(5 + i);
+				_rbt.Insert(5 + i);
 			_rbt.Remove(1);
 			_rbt.Count.Should().Be(100);
 		}
@@ -52,7 +51,7 @@ namespace Structures.Tests
 		[Test]
 		public void HaveZeroSize_WhenAllItemsDeleted()
 		{
-			_rbt.Add(5);
+			_rbt.Insert(5);
 			_rbt.Remove(5);
 			_rbt.Count.Should().Be(0);
 		}
@@ -60,11 +59,10 @@ namespace Structures.Tests
 		[Test]
 		public void DeleteLief()
 		{
-			_rbt.Add(5);
-			_rbt.Add(6);
+			_rbt.Insert(5);
+			_rbt.Insert(6);
 			_rbt.Remove(5);
 			_rbt.Count.Should().Be(1);
 		}
-		
 	}
 }

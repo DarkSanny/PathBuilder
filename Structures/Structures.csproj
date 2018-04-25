@@ -46,9 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvlTree.cs" />
     <Compile Include="RandomBinaryTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedBlackTree.cs" />
+    <Compile Include="Tests\AvlTreeShould.cs" />
     <Compile Include="Tests\RandomBinaryTreeShould.cs" />
     <Compile Include="Tests\RedBlackTreeShould.cs" />
   </ItemGroup>
