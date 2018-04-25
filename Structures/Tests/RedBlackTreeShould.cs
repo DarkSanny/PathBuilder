@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 
 namespace Structures.Tests
@@ -140,7 +139,7 @@ namespace Structures.Tests
 		}
 
 		[Test]
-		public void MainTestIsertLeft()
+		public void InsertInLeft_WhenAllCases()
 		{
 			_tree._head = new RbtNode<int>(11, null, true);
 			_tree._head.Left = new RbtNode<int>(2, _tree._head, false);
@@ -155,7 +154,7 @@ namespace Structures.Tests
 		}
 
 		[Test]
-		public void MainTestInsertRight()
+		public void InsertInRight_WhenAllCases()
 		{
 			_tree._head = new RbtNode<int>(11, null, true);
 			_tree._head.Left = new RbtNode<int>(10, _tree._head, true);
