@@ -13,7 +13,7 @@ namespace Drawer
 
 		public static void Main(string[] args)
 		{
-			MazeTest();
+			//MazeTest();
 			LongerTest();
 		}
 
@@ -104,7 +104,7 @@ namespace Drawer
 			};
 			var field = new SimpleField(maze);
 			var start = new Point(2, 5);
-			var end = new Point(127, 5);
+			var end = new Point(127, 20);
 			field.FindPath(Btastar, start, end);
 			field.DrawField();
 			Console.WriteLine("BFS: " + RunTest(field, Bfs, start, end, 10000));

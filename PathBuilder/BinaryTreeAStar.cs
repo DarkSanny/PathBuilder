@@ -17,7 +17,7 @@ namespace PathBuilder
 			path[start] = null;
 			while (points.Count != 0)
 			{
-				var point = points.MinOrThrow();
+				var point = points.GetMinOrThrow();
 				if (point.Point.Equals(to)) break;
 				var nextPoints = map.GetAreaOfPoint(point.Point)
 					.Where(map.IsCouldVisited)

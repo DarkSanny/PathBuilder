@@ -16,25 +16,25 @@ namespace Structures
 		}
 	}
 
-	public class AvlTree<T> where T : IComparable<T>
+	public class AvlTree<T> : Tree<T> where T : IComparable<T>
 	{
 		internal AvlNode<T> Head;
 		public int Count { get; private set; }
 
-		public void Insert(T value)
+		public override void Insert(T value)
 		{
 			Head = Insert(Head, value);
 			Count++;
 		}
 
-		public void Remove(T item)
+		public override void Remove(T item)
 		{
 			var count = Count;
 			Head = Remove(Head, item, ref count);
 			Count = count;
 		}
 
-		public T MinOrThrow()
+		public override T GetMinOrThrow()
 		{
 			var min = FindMin(Head);
 			if (min == null) throw new Exception("Tree is empty");
@@ -125,7 +125,7 @@ namespace Structures
 		{
 			if (node == null) return null;
 			if (node.Value.CompareTo(item) > 0) node.Left = Remove(node.Left, item, ref count);
-			else if (!node.Value.Equals(item) || node.Value.CompareTo(item) < 0) node.Right = Remove(node.Right, item, ref count);
+			else if (!node.Value.Equals(item)) node.Right = Remove(node.Right, item, ref count);
 			else 
 			{
 				count--;

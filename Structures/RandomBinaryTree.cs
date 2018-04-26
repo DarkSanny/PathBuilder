@@ -16,7 +16,7 @@ namespace Structures
 		}
 	}
 
-	public class RandomBinaryTree<T> where T : IComparable<T>
+	public class RandomBinaryTree <T> : Tree<T> where T : IComparable<T> 
 	{	
 
 		private static Random _random = new Random();
@@ -31,17 +31,17 @@ namespace Structures
 			rbstNode.Size = GetSize(rbstNode.Left) + GetSize(rbstNode.Right) + 1;
 		}
 
-		public void Insert(T item)
+		public override void Insert(T item)
 		{
 			_head = RandomInsert(_head, item);
 		}
 
-		public void Remove(T item)
+		public override void Remove(T item)
 		{
 			_head = Remove(_head, item);
 		}
 
-		public T MinOrThrow()
+		public override T GetMinOrThrow()
 		{
 			if (_head == null) throw new Exception("Tree is empty");
 			var currentNode = _head;
