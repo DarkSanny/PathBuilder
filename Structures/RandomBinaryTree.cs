@@ -50,6 +50,15 @@ namespace Structures
 			return currentNode.Value;
 		}
 
+		public override T GetMaxOrThrow()
+		{
+			if (_head == null) throw new Exception("Tree is empty");
+			var currentNode = _head;
+			while (currentNode.Right != null)
+				currentNode = currentNode.Right;
+			return currentNode.Value;
+		}
+
 		private static RbstNode<T> RotateRight(RbstNode<T> rbstNode)
 		{
 			var tmp = rbstNode.Left;

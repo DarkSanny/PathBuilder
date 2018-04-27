@@ -4,21 +4,11 @@ namespace Structures
 {
     public abstract class Tree <T> where T : IComparable<T>
     {
+		public abstract void Insert(T item);
 
-        public virtual void Insert(T item)
-        {
-            
-        }
+	    public abstract void Remove(T item);
 
-        public virtual void Remove(T item)
-        {
-            
-        }
-
-        public virtual T GetMinOrThrow()
-        {
-            throw new Exception("Tree is empty");
-        }
-
+	    public abstract T GetMinOrThrow();
+	    public abstract T GetMaxOrThrow();
     }
 }

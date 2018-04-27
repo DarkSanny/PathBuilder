@@ -6,7 +6,7 @@ namespace Structures
 	{
 		public static RbtNode<T> Nil = new RbtNode<T>() { IsBlack = true };
 
-		public T Value { get; private set; }
+		public T Value { get; set; }
 		public bool IsBlack { get; set; }
 		public RbtNode<T> Left { get; set; }
 		public RbtNode<T> Right { get; set; }
@@ -23,43 +23,53 @@ namespace Structures
 			Left = Right = Nil;
 			IsBlack = isBlack;
 		}
-
-		public void CopyFrom(RbtNode<T> node)
-		{
-			Value = node.Value;
-			IsBlack = node.IsBlack;
-			Left = node.Left;
-			Right = node.Right;
-			Parent = node.Parent;
-		}
 	}
 
 	internal class RedBlackTree <T> where T: IComparable<T>
 	{
 
-		public RbtNode<T> _head = RbtNode<T>.Nil;
+		internal RbtNode<T> Head = RbtNode<T>.Nil;
 
 		public void Insert(T value)
 		{
 			var previous = RbtNode<T>.Nil;
-			var current = _head;
+			var current = Head;
 			while (current != RbtNode<T>.Nil)
 			{
 				previous = current;
 				current = current.Value.CompareTo(value) > 0 ? current.Left : current.Right;
 			}
 			var newNode = new RbtNode<T>(value, previous, false);
-			if (previous == RbtNode<T>.Nil) _head = newNode;
+			if (previous == RbtNode<T>.Nil) Head = newNode;
 			else if (previous.Value.CompareTo(value) > 0) previous.Left = newNode;
 			else previous.Right = newNode;
 			InsertFixup(newNode);
 		}
-	
+
+		public void Remove(T item)
+		{
+			var node = FindNode(item);
+			if (node == RbtNode<T>.Nil) return;
+			var tmp = node.Left == RbtNode<T>.Nil || node.Right == RbtNode<T>.Nil ? node : TreeSuccesor(node);
+			var tmp2 = tmp.Left != RbtNode<T>.Nil ? tmp.Left : tmp.Right;
+			tmp2.Parent = tmp.Parent;
+			if (tmp.Parent == RbtNode<T>.Nil) Head = tmp2;
+			else if (tmp == tmp.Parent.Left) tmp.Parent.Left = tmp2;
+			else tmp.Parent.Right = tmp2;
+			if (tmp != node) node.Value = tmp.Value;
+			if (tmp.IsBlack) RemoveFixUp(tmp);
+		}
+
+		public bool Contains(T item)
+		{
+			return FindNode(item) != RbtNode<T>.Nil;
+		}
+
 		private void InsertFixup(RbtNode<T> node)
 		{
 			while (!node.Parent.IsBlack)
 				node = node.Parent == node.Parent.Parent.Left ? InsertLeftFixup(node) : InsertRightFixUp(node);
-			_head.IsBlack = true;
+			Head.IsBlack = true;
 		}
 
 		private RbtNode<T> InsertLeftFixup(RbtNode<T> node)
@@ -122,7 +132,7 @@ namespace Structures
 
 		private void FixParent(RbtNode<T> lastNode, RbtNode<T> newNode)
 		{
-			if (lastNode.Parent == RbtNode<T>.Nil) _head = newNode;
+			if (lastNode.Parent == RbtNode<T>.Nil) Head = newNode;
 			else if (lastNode == lastNode.Parent.Left) lastNode.Parent.Left = newNode;
 			else lastNode.Parent.Right = newNode;
 		}
@@ -157,27 +167,82 @@ namespace Structures
 			return tmp;
 		}
 
-		private RbtNode<T> FindNodeOrThrow(T item)
+		private RbtNode<T> FindNode(T item)
 		{
-			if (_head == RbtNode<T>.Nil) throw new Exception("Tree is empty");
-			var current = _head;
-			while (!current.Value.Equals(item) || current != RbtNode<T>.Nil)
+			var current = Head;
+			while (!current.Value.Equals(item) && current != RbtNode<T>.Nil)
 				current = current.Value.CompareTo(item) > 0 ? current.Left : current.Right;
-			if (current == RbtNode<T>.Nil) throw new ArgumentException("Tree is not contain value");
 			return current;
 		}
 
-		public void Remove(T item)
+		//TODO: декомпозиция рефакторинг и все такое
+		private void RemoveFixUp(RbtNode<T> node)
 		{
-			var node = FindNodeOrThrow(item);
-			var tmp = node.Left == RbtNode<T>.Nil || node.Right == RbtNode<T>.Nil ? node : TreeSuccesor(node);
-			var tmp2 = tmp.Left != RbtNode<T>.Nil ? tmp.Left : tmp.Right;
-			tmp2.Parent = tmp.Parent;
-			if (tmp.Parent == RbtNode<T>.Nil) _head = tmp2;
-			else if (tmp == tmp.Parent.Left) tmp.Parent.Left = tmp2;
-			else tmp.Parent.Right = tmp2;
-			if (tmp != node) node.CopyFrom(tmp);
-			//WTF 
+			while (node != Head && node.IsBlack)
+			{
+				if (node == node.Parent.Left)
+				{
+					var tmp = node.Parent.Right;
+					if (!tmp.IsBlack)
+					{
+						tmp.IsBlack = true;
+						node.Parent.IsBlack = false;
+						RotateToLeft(node.Parent);
+						tmp = node.Parent.Right;
+					}
+					if (tmp.Left.IsBlack && tmp.Right.IsBlack)
+					{
+						tmp.IsBlack = false;
+						node = node.Parent;
+					}
+					else
+					{
+						if (tmp.Right.IsBlack)
+						{
+							tmp.Left.IsBlack = true;
+							tmp.IsBlack = false;
+							RotateToRight(tmp);
+							tmp = node.Parent.Right;
+						}
+						tmp.IsBlack = node.Parent.IsBlack;
+						node.Parent.IsBlack = true;
+						tmp.Right.IsBlack = true;
+						RotateToLeft(node.Parent);
+						node = Head;
+					}
+				}
+				else
+				{
+					var tmp = node.Parent.Left;
+					if (!tmp.IsBlack)
+					{
+						tmp.IsBlack = true;
+						node.Parent.IsBlack = false;
+						RotateToRight(node.Parent);
+						tmp = node.Parent.Left;
+					}
+					if (tmp.Left.IsBlack && tmp.Right.IsBlack)
+					{
+						tmp.IsBlack = false;
+						node = node.Parent;
+					}
+					else
+					{
+						if (tmp.Left.IsBlack)
+						{
+							tmp.Right.IsBlack = true;
+							tmp.IsBlack = false;
+							RotateToLeft(tmp);
+							tmp = node.Parent.Left;
+						}
+						tmp.IsBlack = node.Parent.IsBlack;
+						node.Parent.IsBlack = true;
+						tmp.Left.IsBlack = true;
+						RotateToRight(node.Parent);
+						node = Head;
+					}
+				}
+			}
 		}
 	}
 }

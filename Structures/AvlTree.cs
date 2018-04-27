@@ -41,6 +41,13 @@ namespace Structures
 			return min.Value;
 		}
 
+		public override T GetMaxOrThrow()
+		{
+			var max = FindMax(Head);
+			if (max == null) throw new Exception("Tree is empty");
+			return max.Value;
+		}
+
 		internal static int GetHeight(AvlNode<T> node)
 		{
 			return node?.Height ?? 0;
@@ -111,6 +118,16 @@ namespace Structures
 			{
 				if (node?.Left == null) return node;
 				node = node.Left;
+			}
+		}
+
+		internal static AvlNode<T> FindMax(AvlNode<T> node)
+		{
+			if (node == null) return null;
+			while (true)
+			{
+				if (node?.Right == null) return node;
+				node = node.Right;
 			}
 		}
 
