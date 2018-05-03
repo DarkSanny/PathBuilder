@@ -2,43 +2,37 @@
 
 namespace Structures
 {
-	internal class RbstNode<TNode>
+	internal class RbstNode<T> : Node<T>
 	{
-		public TNode Value { get; }
 		public int Size { get; set; }
-		public RbstNode<TNode> Left { get; set; }
-		public RbstNode<TNode> Right { get; set; }
 
-		public RbstNode(TNode item)
+		public RbstNode(T value) : base(value)
 		{
-			Value = item;
 			Size = 1;
 		}
 	}
 
 	public class RandomBinaryTree <T> : Tree<T>
 	{	
-
 		internal Random Random = new Random();
-		internal RbstNode<T> Head;
-
-		public int Count => GetSize(Head);
 
 		internal static int GetSize(RbstNode<T> rbstNode) => rbstNode?.Size ?? 0;
 
 		internal static void FixSize(RbstNode<T> rbstNode)
 		{
-			rbstNode.Size = GetSize(rbstNode.Left) + GetSize(rbstNode.Right) + 1;
+			rbstNode.Size = GetSize((RbstNode<T>)rbstNode.Left) + GetSize((RbstNode<T>)rbstNode.Right) + 1;
 		}
 
 		public override void Insert(T item)
 		{
-			Head = RandomInsert(Head, item);
+			Head = RandomInsert((RbstNode<T>)Head, item);
+			Count = GetSize((RbstNode<T>) Head);
 		}
 
 		public override void Remove(T item)
 		{
-			Head = Remove(Head, item);
+			Head = Remove((RbstNode<T>)Head, item);
+			Count = GetSize((RbstNode<T>)Head);
 		}
 
 		public override T GetMinOrThrow()
@@ -61,7 +55,7 @@ namespace Structures
 
 		internal RbstNode<T> RotateRight(RbstNode<T> rbstNode)
 		{
-			var tmp = rbstNode.Left;
+			var tmp = (RbstNode<T>)rbstNode.Left;
 			if (tmp == null || Compare(tmp.Value, rbstNode.Value) == 0) return rbstNode;
 			rbstNode.Left = tmp.Right;
 			tmp.Right = rbstNode;
@@ -73,7 +67,7 @@ namespace Structures
 
 		internal RbstNode<T> RotateLeft(RbstNode<T> rbstNode)
 		{
-			var tmp = rbstNode.Right;
+			var tmp = (RbstNode<T>)rbstNode.Right;
 			if (tmp == null || 	Compare(tmp.Value, rbstNode.Value) == 0) return rbstNode;
 			rbstNode.Right = tmp.Left;
 			tmp.Left = rbstNode;
@@ -87,10 +81,10 @@ namespace Structures
 			if (rbstNode == null) return new RbstNode<T>(item);
 			if (Compare(rbstNode.Value, item) > 0)
 			{
-				rbstNode.Left = InsertRoot(rbstNode.Left, item);
+				rbstNode.Left = InsertRoot((RbstNode<T>)rbstNode.Left, item);
 				return RotateRight(rbstNode);
 			}
-				rbstNode.Right = InsertRoot(rbstNode.Right, item);
+				rbstNode.Right = InsertRoot((RbstNode<T>)rbstNode.Right, item);
 				return RotateLeft(rbstNode);
 		}
 
@@ -100,9 +94,9 @@ namespace Structures
 			if (Random.Next(rbstNode.Size + 1) == 0)
 				return InsertRoot(rbstNode, item);
 			if (Compare(rbstNode.Value, item) > 0)
-				rbstNode.Left = RandomInsert(rbstNode.Left, item);
+				rbstNode.Left = RandomInsert((RbstNode<T>)rbstNode.Left, item);
 			else
-				rbstNode.Right = RandomInsert(rbstNode.Right, item);
+				rbstNode.Right = RandomInsert((RbstNode<T>)rbstNode.Right, item);
 			FixSize(rbstNode);
 			return rbstNode;
 		}
@@ -113,11 +107,11 @@ namespace Structures
 			if (second == null) return first;
 			if (Random.Next(first.Size + second.Size) < first.Size)
 			{
-				first.Right = Join(first.Right, second);
+				first.Right = Join((RbstNode<T>)first.Right, second);
 				FixSize(first);
 				return first;
 			}
-				second.Left = Join(first, second.Left);
+				second.Left = Join(first, (RbstNode<T>)second.Left);
 				FixSize(second);
 				return second;
 		}
@@ -127,12 +121,12 @@ namespace Structures
 			if (rbstNode == null) return null;
 			if (rbstNode.Value.Equals(item))
 			{
-				return Join(rbstNode.Left, rbstNode.Right);
+				return Join((RbstNode<T>)rbstNode.Left, (RbstNode<T>)rbstNode.Right);
 			}
 			if (Compare(rbstNode.Value, item) > 0)
-				rbstNode.Left = Remove(rbstNode.Left, item);
+				rbstNode.Left = Remove((RbstNode<T>)rbstNode.Left, item);
 			else
-				rbstNode.Right = Remove(rbstNode.Right, item);
+				rbstNode.Right = Remove((RbstNode<T>)rbstNode.Right, item);
 			FixSize(rbstNode);
 			return rbstNode;
 		}

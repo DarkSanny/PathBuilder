@@ -2,48 +2,41 @@
 
 namespace Structures
 {
-	internal class AvlNode<T>
+	internal class AvlNode<T> : Node<T>
 	{
-		public T Value { get; set; }
-		public int Height { get; set; }
-		public AvlNode<T> Left { get; set; }
-		public AvlNode<T> Right { get; set; }
+		public byte Height { get; set; }
 
-		public AvlNode(T value)
+		public AvlNode(T value) : base(value)
 		{
-			Value = value;
 			Height = 1;
 		}
 	}
 
 	public class AvlTree<T> : Tree<T> 
 	{
-		internal AvlNode<T> Head;
-		public int Count { get; private set; }
-
 		public override void Insert(T value)
 		{
-			Head = Insert(Head, value);
+			Head = Insert((AvlNode<T>)Head, value);
 			Count++;
 		}
 
 		public override void Remove(T item)
 		{
-			var count = Count;
-			Head = Remove(Head, item, ref count);
-			Count = count;
+			if (!Contains(item)) return;
+			Head = Remove((AvlNode<T>)Head, item);
+			Count--;
 		}
 
 		public override T GetMinOrThrow()
 		{
-			var min = FindMin(Head);
+			var min = FindMin((AvlNode<T>)Head);
 			if (min == null) throw new Exception("Tree is empty");
 			return min.Value;
 		}
 
 		public override T GetMaxOrThrow()
 		{
-			var max = FindMax(Head);
+			var max = FindMax((AvlNode<T>)Head);
 			if (max == null) throw new Exception("Tree is empty");
 			return max.Value;
 		}
@@ -55,14 +48,14 @@ namespace Structures
 
 		internal static int GetBalanceFactor(AvlNode<T> node)
 		{
-			return GetHeight(node?.Right) - GetHeight(node?.Left);
+			return GetHeight((AvlNode<T>)node?.Right) - GetHeight((AvlNode<T>)node?.Left);
 		}
 
 		internal static void FixHeight(AvlNode<T> node)
 		{
-			var leftHeight = GetHeight(node.Left);
-			var rightHeight = GetHeight(node.Right);
-			node.Height = (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
+			var leftHeight = GetHeight((AvlNode<T>)node.Left);
+			var rightHeight = GetHeight((AvlNode<T>)node.Right);
+			node.Height = (byte)((leftHeight > rightHeight ? leftHeight : rightHeight) + 1);
 		}
 
 		internal AvlNode<T> RotateToRight(AvlNode<T> node)
@@ -72,8 +65,8 @@ namespace Structures
 			node.Left = tmp.Right;
 			tmp.Right = node;
 			FixHeight(node);
-			FixHeight(tmp);
-			return tmp;
+			FixHeight((AvlNode<T>)tmp);
+			return (AvlNode<T>)tmp;
 		}
 
 		internal AvlNode<T> RotateToLeft(AvlNode<T> node)
@@ -83,8 +76,8 @@ namespace Structures
 			node.Right = tmp.Left;
 			tmp.Left = node;
 			FixHeight(node);
-			FixHeight(tmp);
-			return tmp;
+			FixHeight((AvlNode<T>)tmp);
+			return (AvlNode<T>)tmp;
 		}
 
 		internal AvlNode<T> Balance(AvlNode<T> node)
@@ -94,10 +87,10 @@ namespace Structures
 			switch (balanceFactor)
 			{
 				case 2:
-					if (GetBalanceFactor(node.Right) < 0) node.Right = RotateToRight(node.Right);
+					if (GetBalanceFactor((AvlNode<T>)node.Right) < 0) node.Right = RotateToRight((AvlNode<T>)node.Right);
 					return RotateToLeft(node);
 				case -2:
-					if (GetBalanceFactor(node.Left) > 0) node.Left = RotateToLeft(node.Left);
+					if (GetBalanceFactor((AvlNode<T>)node.Left) > 0) node.Left = RotateToLeft((AvlNode<T>)node.Left);
 					return RotateToRight(node);
 			}
 			return node;
@@ -106,8 +99,8 @@ namespace Structures
 		internal AvlNode<T> Insert(AvlNode<T> node, T value)
 		{
 			if (node == null) return new AvlNode<T>(value);
-			if (Compare(node.Value, value) > 0) node.Left = Insert(node.Left, value);
-			else node.Right = Insert(node.Right, value);
+			if (Compare(node.Value, value) > 0) node.Left = Insert((AvlNode<T>)node.Left, value);
+			else node.Right = Insert((AvlNode<T>)node.Right, value);
 			return Balance(node);
 		}
 
@@ -117,7 +110,7 @@ namespace Structures
 			while (true)
 			{
 				if (node?.Left == null) return node;
-				node = node.Left;
+				node = (AvlNode<T>)node.Left;
 			}
 		}
 
@@ -127,27 +120,26 @@ namespace Structures
 			while (true)
 			{
 				if (node?.Right == null) return node;
-				node = node.Right;
+				node = (AvlNode<T>)node.Right;
 			}
 		}
 
 		internal AvlNode<T> RemoveMin(AvlNode<T> node)
 		{
-			if (node.Left == null) return node.Right;
-			node.Left = RemoveMin(node.Left);
+			if (node.Left == null) return (AvlNode<T>)node.Right;
+			node.Left = RemoveMin((AvlNode<T>)node.Left);
 			return Balance(node);
 		}
 
-		internal AvlNode<T> Remove(AvlNode<T> node, T item, ref int count)
+		internal AvlNode<T> Remove(AvlNode<T> node, T item)
 		{
 			if (node == null) return null;
-			if (Compare(node.Value, item) > 0) node.Left = Remove(node.Left, item, ref count);
-			else if (!node.Value.Equals(item)) node.Right = Remove(node.Right, item, ref count);
+			if (Compare(node.Value, item) > 0) node.Left = Remove((AvlNode<T>)node.Left, item);
+			else if (!node.Value.Equals(item)) node.Right = Remove((AvlNode<T>)node.Right, item);
 			else 
 			{
-				count--;
-				var left = node.Left;
-				var right = node.Right;
+				var left = (AvlNode<T>)node.Left;
+				var right = (AvlNode<T>)node.Right;
 				if (right == null) return left;
 				var min = FindMin(right);
 				min.Right = RemoveMin(right);

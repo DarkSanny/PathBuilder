@@ -62,5 +62,13 @@ namespace Structures.Tests
 			_avlTree.Head.Should().Be(null);
 			_avlTree.Count.Should().Be(0);
 		}
+
+		[Test]
+		public void Enumerate()
+		{
+			for (var i = 0; i < 5; i++)
+				_avlTree.Insert(i);
+			_avlTree.Should().BeEquivalentTo(new[] {0, 1, 2, 3, 4});
+		}
 	}
 }
