@@ -25,7 +25,7 @@ namespace Structures
 
 		public override void Insert(T item)
 		{
-			Head = RandomInsert((RbstNode<T>)Head, item);
+			Head = Insert((RbstNode<T>)Head, item);
 			Count = GetSize((RbstNode<T>) Head);
 		}
 
@@ -53,7 +53,7 @@ namespace Structures
 			return currentNode.Value;
 		}
 
-		internal RbstNode<T> RotateRight(RbstNode<T> rbstNode)
+		internal RbstNode<T> RotateToRight(RbstNode<T> rbstNode)
 		{
 			var tmp = (RbstNode<T>)rbstNode.Left;
 			if (tmp == null || Compare(tmp.Value, rbstNode.Value) == 0) return rbstNode;
@@ -65,7 +65,7 @@ namespace Structures
 			return tmp;
 		}
 
-		internal RbstNode<T> RotateLeft(RbstNode<T> rbstNode)
+		internal RbstNode<T> RotateToLeft(RbstNode<T> rbstNode)
 		{
 			var tmp = (RbstNode<T>)rbstNode.Right;
 			if (tmp == null || 	Compare(tmp.Value, rbstNode.Value) == 0) return rbstNode;
@@ -82,21 +82,21 @@ namespace Structures
 			if (Compare(rbstNode.Value, item) > 0)
 			{
 				rbstNode.Left = InsertRoot((RbstNode<T>)rbstNode.Left, item);
-				return RotateRight(rbstNode);
+				return RotateToRight(rbstNode);
 			}
 				rbstNode.Right = InsertRoot((RbstNode<T>)rbstNode.Right, item);
-				return RotateLeft(rbstNode);
+				return RotateToLeft(rbstNode);
 		}
 
-		internal RbstNode<T> RandomInsert(RbstNode<T> rbstNode, T item) 
+		internal RbstNode<T> Insert(RbstNode<T> rbstNode, T item) 
 		{
 			if (rbstNode == null) return new RbstNode<T>(item);
 			if (Random.Next(rbstNode.Size + 1) == 0)
 				return InsertRoot(rbstNode, item);
 			if (Compare(rbstNode.Value, item) > 0)
-				rbstNode.Left = RandomInsert((RbstNode<T>)rbstNode.Left, item);
+				rbstNode.Left = Insert((RbstNode<T>)rbstNode.Left, item);
 			else
-				rbstNode.Right = RandomInsert((RbstNode<T>)rbstNode.Right, item);
+				rbstNode.Right = Insert((RbstNode<T>)rbstNode.Right, item);
 			FixSize(rbstNode);
 			return rbstNode;
 		}
