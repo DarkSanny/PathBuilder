@@ -16,7 +16,7 @@ namespace Structures
 		}
 	}
 
-	public class AvlTree<T> : Tree<T> where T : IComparable<T>
+	public class AvlTree<T> : Tree<T> 
 	{
 		internal AvlNode<T> Head;
 		public int Count { get; private set; }
@@ -65,10 +65,10 @@ namespace Structures
 			node.Height = (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
 		}
 
-		internal static AvlNode<T> RotateToRight(AvlNode<T> node)
+		internal AvlNode<T> RotateToRight(AvlNode<T> node)
 		{
 			var tmp = node.Left;
-			if (tmp == null || tmp.Value.CompareTo(node.Value) == 0) return node;
+			if (tmp == null || Compare(tmp.Value, node.Value) == 0) return node;
 			node.Left = tmp.Right;
 			tmp.Right = node;
 			FixHeight(node);
@@ -76,10 +76,10 @@ namespace Structures
 			return tmp;
 		}
 
-		internal static AvlNode<T> RotateToLeft(AvlNode<T> node)
+		internal AvlNode<T> RotateToLeft(AvlNode<T> node)
 		{
 			var tmp = node.Right;
-			if (tmp == null || tmp.Value.CompareTo(node.Value) == 0) return node;
+			if (tmp == null || Compare(tmp.Value, node.Value) == 0) return node;
 			node.Right = tmp.Left;
 			tmp.Left = node;
 			FixHeight(node);
@@ -87,7 +87,7 @@ namespace Structures
 			return tmp;
 		}
 
-		internal static AvlNode<T> Balance(AvlNode<T> node)
+		internal AvlNode<T> Balance(AvlNode<T> node)
 		{
 			FixHeight(node);
 			var balanceFactor = GetBalanceFactor(node);
@@ -103,15 +103,15 @@ namespace Structures
 			return node;
 		}
 
-		internal static AvlNode<T> Insert(AvlNode<T> node, T value)
+		internal AvlNode<T> Insert(AvlNode<T> node, T value)
 		{
 			if (node == null) return new AvlNode<T>(value);
-			if (node.Value.CompareTo(value) > 0) node.Left = Insert(node.Left, value);
+			if (Compare(node.Value, value) > 0) node.Left = Insert(node.Left, value);
 			else node.Right = Insert(node.Right, value);
 			return Balance(node);
 		}
 
-		internal static AvlNode<T> FindMin(AvlNode<T> node)
+		internal AvlNode<T> FindMin(AvlNode<T> node)
 		{
 			if (node == null) return null;
 			while (true)
@@ -121,7 +121,7 @@ namespace Structures
 			}
 		}
 
-		internal static AvlNode<T> FindMax(AvlNode<T> node)
+		internal AvlNode<T> FindMax(AvlNode<T> node)
 		{
 			if (node == null) return null;
 			while (true)
@@ -131,17 +131,17 @@ namespace Structures
 			}
 		}
 
-		internal static AvlNode<T> RemoveMin(AvlNode<T> node)
+		internal AvlNode<T> RemoveMin(AvlNode<T> node)
 		{
 			if (node.Left == null) return node.Right;
 			node.Left = RemoveMin(node.Left);
 			return Balance(node);
 		}
 
-		internal static AvlNode<T> Remove(AvlNode<T> node, T item, ref int count)
+		internal AvlNode<T> Remove(AvlNode<T> node, T item, ref int count)
 		{
 			if (node == null) return null;
-			if (node.Value.CompareTo(item) > 0) node.Left = Remove(node.Left, item, ref count);
+			if (Compare(node.Value, item) > 0) node.Left = Remove(node.Left, item, ref count);
 			else if (!node.Value.Equals(item)) node.Right = Remove(node.Right, item, ref count);
 			else 
 			{
