@@ -10,7 +10,7 @@ namespace PathBuilder
 		public IEnumerable<Point> FindPath(IMap map, Point from, Point to)
 		{
 			var points = new AvlTree<AStarPoint>();
-			var path = new Dictionary<AStarPoint, AStarPoint>();
+			var path = new System.Collections.Generic.Dictionary<AStarPoint, AStarPoint>();
 			var start = new AStarPoint(from, to, null);
 			var finish = new AStarPoint(to, to, null);
 			points.Insert(start);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using PathBuilder;
+using Structures;
 
 namespace Drawer
 {
@@ -13,8 +14,13 @@ namespace Drawer
 
 		public static void Main(string[] args)
 		{
+			var dict = new Dictionary<int, string>();
+			for (var i = 0; i < 25; i++)
+				dict.Add(i, i.ToString());
+			dict.Remove(12);
+			Console.Write(dict.ToString());
 			//MazeTest();
-			LongerTest();
+			//LongerTest();
 		}
 
 

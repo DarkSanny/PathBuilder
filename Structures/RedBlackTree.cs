@@ -50,7 +50,7 @@ namespace Structures
 		{
 			var node = FindNode(item);
 			if (node == RbtNode<T>.Nil) return;
-			var tmp = node.Left == RbtNode<T>.Nil || node.Right == RbtNode<T>.Nil ? node : TreeSuccesor(node);
+			var tmp = node.Left == RbtNode<T>.Nil || node.Right == RbtNode<T>.Nil ? node : GetNextNode(node);
 			var tmp2 = tmp.Left != RbtNode<T>.Nil ? tmp.Left : tmp.Right;
 			tmp2.Parent = tmp.Parent;
 			if (tmp.Parent == RbtNode<T>.Nil) Head = tmp2;
@@ -155,9 +155,9 @@ namespace Structures
 			return current;
 		}
 
-		private static RbtNode<T> TreeSuccesor(RbtNode<T> node)
+		private static RbtNode<T> GetNextNode(RbtNode<T> node)
 		{
-			if (node.Right != RbtNode<T>.Nil) return GetMinNodeOrThrow(node);
+			if (node.Right != RbtNode<T>.Nil) return GetMinNodeOrThrow(node.Right);
 			var tmp = node.Parent;
 			while (tmp != RbtNode<T>.Nil && node == tmp.Right)
 			{

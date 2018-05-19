@@ -68,6 +68,10 @@
       <Project>{0FC8AAF1-D3F4-49B8-8D3D-C68BE34429AF}</Project>
       <Name>PathBuilder</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Structures\Structures.csproj">
+      <Project>{1cf35159-90c0-4a85-852f-a01397f2b712}</Project>
+      <Name>Structures</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

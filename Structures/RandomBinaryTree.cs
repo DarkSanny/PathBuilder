@@ -35,24 +35,6 @@ namespace Structures
 			Count = GetSize((RbstNode<T>)Head);
 		}
 
-		public override T GetMinOrThrow()
-		{
-			if (Head == null) throw new Exception("Tree is empty");
-			var currentNode = Head;
-			while (currentNode.Left != null)
-				currentNode = currentNode.Left;
-			return currentNode.Value;
-		}
-
-		public override T GetMaxOrThrow()
-		{
-			if (Head == null) throw new Exception("Tree is empty");
-			var currentNode = Head;
-			while (currentNode.Right != null)
-				currentNode = currentNode.Right;
-			return currentNode.Value;
-		}
-
 		internal RbstNode<T> RotateToRight(RbstNode<T> rbstNode)
 		{
 			var tmp = (RbstNode<T>)rbstNode.Left;

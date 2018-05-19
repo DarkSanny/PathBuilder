@@ -31,11 +31,27 @@ namespace Structures
 	    }
 
 		public abstract void Insert(T item);
-	    public abstract void Remove(T item);
-	    public abstract T GetMinOrThrow();
-	    public abstract T GetMaxOrThrow();
+		public abstract void Remove(T item);
 
-	    internal virtual Node<T> Find(T value)
+		public virtual T GetMinOrThrow()
+		{
+			if (Head == null) throw new Exception("Tree is empty");
+			var currentNode = Head;
+			while (currentNode.Left != null)
+				currentNode = currentNode.Left;
+			return currentNode.Value;
+		}
+
+		public virtual T GetMaxOrThrow()
+		{
+			if (Head == null) throw new Exception("Tree is empty");
+			var currentNode = Head;
+			while (currentNode.Right != null)
+				currentNode = currentNode.Right;
+			return currentNode.Value;
+		}
+
+		internal virtual Node<T> Find(T value)
 	    {
 		    return Find(Head, value);
 	    }
@@ -46,7 +62,7 @@ namespace Structures
 		    while (node != null)
 		    {
 				if (node.Value.Equals(value)) return node;
-				 node = Compare(node.Value, value) > 0 ? node.Left : node.Right;
+				node = Compare(node.Value, value) > 0 ? node.Left : node.Right;
 			}
 		    return null;
 		}

@@ -64,5 +64,13 @@ namespace Structures.Tests
 			_rbt.Remove(5);
 			_rbt.Count.Should().Be(1);
 		}
+
+		[Test]
+		public void Enumerate()
+		{
+			for (var i = 0; i < 5; i++)
+				_rbt.Insert(i);
+			_rbt.Should().BeEquivalentTo(new[] { 0, 1, 2, 3, 4 });
+		}
 	}
 }

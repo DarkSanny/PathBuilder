@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Structures
+﻿namespace Structures
 {
 	internal class AvlNode<T> : Node<T>
 	{
@@ -25,20 +23,6 @@ namespace Structures
 			if (!Contains(item)) return;
 			Head = Remove((AvlNode<T>)Head, item);
 			Count--;
-		}
-
-		public override T GetMinOrThrow()
-		{
-			var min = FindMin((AvlNode<T>)Head);
-			if (min == null) throw new Exception("Tree is empty");
-			return min.Value;
-		}
-
-		public override T GetMaxOrThrow()
-		{
-			var max = FindMax((AvlNode<T>)Head);
-			if (max == null) throw new Exception("Tree is empty");
-			return max.Value;
 		}
 
 		internal static int GetHeight(AvlNode<T> node)

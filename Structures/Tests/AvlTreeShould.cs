@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Structures.Tests
@@ -69,6 +71,43 @@ namespace Structures.Tests
 			for (var i = 0; i < 5; i++)
 				_avlTree.Insert(i);
 			_avlTree.Should().BeEquivalentTo(new[] {0, 1, 2, 3, 4});
+		}
+
+		[Test]
+		public void EnumerateRandomSequence()
+		{
+			var sequence = Enumerable.Range(0, 10).ToList();
+			var random = new Random();
+			foreach (var item in sequence.OrderBy(i => random.Next()))
+				_avlTree.Insert(item);
+			_avlTree.Should().BeEquivalentTo(sequence);
+		}
+
+		[Test]
+		public void RemoveRandom()
+		{
+			var sequence = Enumerable.Range(0, 5);
+			var random = new Random();
+			foreach (var item in sequence.OrderBy(i => random.Next()))
+				_avlTree.Insert(item);
+			_avlTree.Remove(3);
+			_avlTree.Should().BeEquivalentTo(new [] {0, 1, 2, 4});
+		}
+
+		[Test]
+		public void FindMin()
+		{
+			for (var i = 0; i < 5; i++)
+				_avlTree.Insert(i);
+			_avlTree.GetMinOrThrow().Should().Be(0);
+		}
+
+		[Test]
+		public void FindMax()
+		{
+			for (var i = 0; i < 5; i++)
+				_avlTree.Insert(i);
+			_avlTree.GetMaxOrThrow().Should().Be(4);
 		}
 	}
 }
