@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using PathBuilder;
 using Structures;
 
@@ -14,11 +15,16 @@ namespace Drawer
 
 		public static void Main(string[] args)
 		{
-			var dict = new Dictionary<int, string>();
-			for (var i = 0; i < 25; i++)
-				dict.Add(i, i.ToString());
-			dict.Remove(12);
-			Console.Write(dict.ToString());
+			var heap = new BinaryHeap<int>();
+			var random = new Random();
+			var sequence = Enumerable.Range(0, 100).OrderBy(i => random.Next()).ToList();
+			foreach (var i in sequence)
+			{
+				heap.Add(i);
+			}
+			Console.WriteLine(heap.ToString());
+			heap.GetAndRemoveMax();
+			Console.WriteLine(heap.ToString());
 			//MazeTest();
 			//LongerTest();
 		}
