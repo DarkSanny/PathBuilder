@@ -53,9 +53,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayList.cs" />
+    <Compile Include="ArrayStack.cs" />
     <Compile Include="AvlTree.cs" />
     <Compile Include="BinaryHeap.cs" />
     <Compile Include="Dictionary.cs" />
+    <Compile Include="LinkedList.cs" />
+    <Compile Include="LinkedQueue.cs" />
     <Compile Include="PrefixTree.cs" />
     <Compile Include="RandomBinaryTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
